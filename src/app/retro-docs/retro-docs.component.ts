@@ -11,7 +11,8 @@ import { RetroDocsService, Entry } from './services/retro-docs.service';
   styleUrl: './retro-docs.component.scss'
 })
 export class RetroDocsComponent implements OnInit {
-  categories = ['HTML', 'CSS', 'JavaScript'];
+  categories = ['All', 'HTML', 'CSS', 'JavaScript'];
+  entryCategories = ['HTML', 'CSS', 'JavaScript']; 
   selectedCategory = 'All';
   searchTerm = '';
   selectedEntry: Entry | null = null;
