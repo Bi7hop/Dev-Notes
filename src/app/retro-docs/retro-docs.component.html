@@ -13,12 +13,148 @@
         <h1>Dev Notes 8-bit</h1>
       </header>
   
+      <div class="category-tabs">
+        <button 
+          *ngFor="let category of categories"
+          class="category-button"
+          [class.active]="selectedCategory === category"
+          (click)="selectCategory(category)">
+          {{category}}
+        </button>
+      </div>
+  
       <div class="search-box">
         <input 
           type="text" 
           placeholder="Suche..."
-          class="retro-input">
-        <button class="retro-button">+ Neu</button>
+          class="retro-input"
+          [(ngModel)]="searchTerm">
+        <button class="retro-button" (click)="openNewEntryModal()">+ Neu</button>
+      </div>
+  
+      <div class="entries-grid">
+        <div 
+          *ngFor="let entry of filteredEntries" 
+          class="entry-card"
+          (click)="showEntryDetails(entry)">
+          <h3>{{entry.title}}</h3>
+          <p>{{entry.description}}</p>
+          <div class="tags">
+            <span *ngFor="let tag of entry.tags" class="tag">
+              {{tag}}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
+  
+    <div class="modal" *ngIf="selectedEntry" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>{{selectedEntry.title}}</h2>
+        <p>{{selectedEntry.description}}</p>
+        <div class="tags">
+          <span *ngFor="let tag of selectedEntry.tags" class="tag">
+            {{tag}}
+          </span>
+        </div>
+        <div class="button-group">
+          <button class="retro-button" (click)="closeModal()">Schließen</button>
+          <button class="retro-button" (click)="openEditModal(selectedEntry)">Bearbeiten</button>
+          <button class="retro-button delete-button" (click)="openDeleteModal(selectedEntry)">Löschen</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="modal" *ngIf="showNewEntryModal" (click)="closeNewEntryModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>Neuer Eintrag</h2>
+        <div class="form-group">
+          <input 
+            type="text" 
+            class="retro-input" 
+            placeholder="Titel"
+            [(ngModel)]="newEntry.title">
+        </div>
+        <div class="form-group">
+          <textarea 
+            class="retro-input" 
+            placeholder="Beschreibung"
+            [(ngModel)]="newEntry.description"></textarea>
+        </div>
+        <div class="form-group">
+          <select 
+            class="retro-input"
+            [(ngModel)]="newEntry.category">
+            <option value="">Kategorie wählen</option>
+            <option *ngFor="let cat of categories" [value]="cat">
+              {{cat}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <input 
+            type="text" 
+            class="retro-input" 
+            placeholder="Tags (mit Komma getrennt)"
+            [(ngModel)]="tagInput">
+        </div>
+        <div class="button-group">
+          <button class="retro-button" (click)="addEntry()">Speichern</button>
+          <button class="retro-button" (click)="closeNewEntryModal()">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="modal delete-modal" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>Eintrag löschen</h2>
+        <p>Möchtest du "{{entryToDelete?.title}}" wirklich löschen?</p>
+        <div class="button-group">
+          <button class="retro-button" (click)="closeDeleteModal()">Abbrechen</button>
+          <button class="retro-button delete-button" (click)="deleteEntry()">Löschen</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="modal" *ngIf="showEditModal" (click)="closeEditModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>Eintrag bearbeiten</h2>
+        <div class="form-group">
+          <input 
+            type="text" 
+            class="retro-input" 
+            placeholder="Titel"
+            [(ngModel)]="editEntry.title">
+        </div>
+        <div class="form-group">
+          <textarea 
+            class="retro-input" 
+            placeholder="Beschreibung"
+            [(ngModel)]="editEntry.description"></textarea>
+        </div>
+        <div class="form-group">
+          <select 
+            class="retro-input"
+            [(ngModel)]="editEntry.category">
+            <option value="">Kategorie wählen</option>
+            <option *ngFor="let cat of categories" [value]="cat">
+              {{cat}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <input 
+            type="text" 
+            class="retro-input" 
+            placeholder="Tags (mit Komma getrennt)"
+            [(ngModel)]="editTagInput">
+        </div>
+        <div class="button-group">
+          <button class="retro-button" (click)="updateEntry()">Speichern</button>
+          <button class="retro-button" (click)="closeEditModal()">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  
   </div>
+  
